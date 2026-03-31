@@ -1,0 +1,26 @@
+interface FormConfig {
+    to?: string;
+    source?: string | string[];
+    subjectPrefix?: string;
+    redirect?: string;
+}
+
+interface SmtpConfig {
+    host: string;
+    port: number;
+    auth: {
+        user: string;
+        pass?: string;
+    };
+}
+
+export interface Config {
+    smtp: SmtpConfig;
+    defaultTo: string;
+    defaultSource: string;
+    defaultSubjectPrefix?: string;
+    defaultRedirect: string;
+    catchAll: boolean;
+    noHonetpot?: boolean;
+    forms: Record<string, FormConfig>;
+}
