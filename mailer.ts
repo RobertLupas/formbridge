@@ -18,23 +18,23 @@ export function formFieldsToText(formFields: Record<string, string>, formatText:
     return text;
 }
 
-function formFieldsToHtml(formName: string, formFields: Record<string, string>): string {
-    let html = `<h1>New Form Submission</h1><h3>Source: ${formName}</h3><ul>`;
+function formFieldsToHtml(formName: string, formFields: Record<string, string>, source?: string | undefined): string {
+    let html = `<h1>New <i>${capitalizeFirstLetter(formName)}</i> Form Submission ${source ? `(on ${source})` : ""}</h1><h2>Fields:</h2><ul>`;
     for (const [key, value] of Object.entries(formFields))
         html += `<li><strong>${key}:</strong> ${value}</li>`;
     html += "</ul>";
     return html;
 }
 
-export async function sendResponseFromFields(formName: string, formFields: Record<string, string>) {
+export async function sendResponseFromFields(formName: string, formFields: Record<string, string>, source?: string | undefined) {
     const form = config.forms[formName];
 
     try {
         await transporter.sendMail({
-            from: { name: `${capitalizeFirstLetter(formName)} form (${form?.source || config.defaultSource})`, address: config.smtp.auth.user },
+            from: { name: `${capitalizeFirstLetter(formName)} ${source ? "(on " + source + ")" : ""}`, address: config.smtp.auth.user },
             to: form?.to || config.defaultTo,
-            html: formFieldsToHtml(formName, formFields)
             subject: `${form?.subjectPrefix ?? config.defaultSubjectPrefix ?? ""} New ${capitalizeFirstLetter(formName)} Form Submission`,
+            html: formFieldsToHtml(formName, formFields, source)
         });
     } catch (error) {
         console.error(`Failed to send email for form "${formName}":`, error);

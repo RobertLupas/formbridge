@@ -23,7 +23,7 @@ Bun.serve({
             if (formFields["_gotcha"]) return new Response("Spam detected", { status: 400 });
 
             console.log(`Received submission for \x1b[36m${formId}\x1b[0m: ${formFieldsToText(formFields, false, false)}`);
-            await sendResponseFromFields(formId, formFields);
+            await sendResponseFromFields(formId, formFields, req.headers.get("referer") || undefined);
 
             return Response.redirect(form?.redirect || config.defaultRedirect, 302);
         }
