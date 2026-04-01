@@ -6,16 +6,17 @@ interface FormConfig {
 }
 
 interface SmtpConfig {
-    host: string;
-    port: number;
+    host?: string;
+    port?: number;
     auth: {
-        user: string;
+        user?: string;
         pass?: string;
     };
 }
 
 export interface Config {
-    smtp: SmtpConfig;
+    service?: "gmail";
+    smtp?: SmtpConfig;
     defaultTo: string;
     defaultSource: string;
     defaultSubjectPrefix?: string;

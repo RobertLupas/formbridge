@@ -2,14 +2,39 @@ import nodemailer from "nodemailer";
 import config from "./config";
 import { capitalizeFirstLetter } from "./util";
 
-const transporter = nodemailer.createTransport({
-    host: config.smtp.host,
-    port: config.smtp.port,
-    auth: {
-        user: config.smtp.auth.user,
-        pass: config.smtp.auth.pass,
-    },
-});
+var transporter: nodemailer.Transporter;
+
+const user = config.smtp?.auth.user || Bun.env.USER as string;
+if (!user) throw new Error("SMTP user is not defined. Please provide it in the configuration or set the USER environment variable.");
+
+switch (config.service) {
+    case "gmail": {
+        transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: user,
+                pass: config.smtp?.auth.pass || Bun.env.GOOGLE_APP_PASSWORD,
+            },
+        });
+        break;
+    }
+    default: {
+        const host = config.smtp?.host || Bun.env.SMTP_HOST;
+        const port = config.smtp?.port || parseInt(Bun.env.SMTP_PORT as string);
+        const pass = config.smtp?.auth.pass || Bun.env.PASSWORD as string;
+        if (!host || !port || !pass) throw new Error("SMTP configuration is incomplete. Please provide host, port, and auth in the configuration.");
+
+        transporter = nodemailer.createTransport({
+            host: host,
+            port: port,
+            auth: {
+                user: user,
+                pass: pass,
+            },
+        });
+        break;
+    }
+}
 
 export function formFieldsToText(formFields: Record<string, string>, formatText: boolean = false, addNewline: boolean = true): string {
     let text = "";
@@ -31,7 +56,7 @@ export async function sendResponseFromFields(formName: string, formFields: Recor
 
     try {
         await transporter.sendMail({
-            from: { name: `${capitalizeFirstLetter(formName)} ${source ? "(on " + source + ")" : ""}`, address: config.smtp.auth.user },
+            from: { name: `${capitalizeFirstLetter(formName)} ${source ? "(on " + source + ")" : ""}`, address: user },
             to: form?.to || config.defaultTo,
             subject: `${form?.subjectPrefix ?? config.defaultSubjectPrefix ?? ""} New ${capitalizeFirstLetter(formName)} Form Submission`,
             html: formFieldsToHtml(formName, formFields, source)

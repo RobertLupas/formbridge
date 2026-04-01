@@ -1,14 +1,7 @@
 import { type Config } from "./types";
 
 export default {
-    "smtp": {
-        "host": "smtp.example.com",
-        "port": 587,
-        "auth": {
-            "user": "formbridge@example.com",
-            "pass": "password"
-        }
-    },
+    "service": "gmail",
     "defaultTo": "company@example.com",
     "defaultSource": "example.com",
     "defaultSubjectPrefix": "[Form Submission]",
