@@ -13,7 +13,7 @@ switch (config.service) {
             service: "gmail",
             auth: {
                 user: user,
-                pass: config.smtp?.auth.pass || Bun.env.GOOGLE_APP_PASSWORD,
+                pass: config.smtp?.auth.pass || Bun.env.PASSWORD,
             },
         });
         break;
