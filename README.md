@@ -1,6 +1,6 @@
 # FormBridge
 
-> A small, [Bun](https://bun.sh)-based service that bridges form submissions to your email inbox.
+> A small, [Bun](https://bun.sh)-based service that bridges form submissions to your destination of choice (email for now).
 
 It's like a self-hosted [Formsubmit](https://formsubmit.co/).
 
