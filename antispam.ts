@@ -12,6 +12,7 @@ function gotcha(formFields: Record<string, string>) {
 
 
 function originCheck(req: Request, formName: string) {
+    if (Bun.env.NODE_ENV === "development") return false; // Skip origin check in development mode
     const origin = req.headers.get("origin");
     if (!origin) return false;
     const allowedOrigins = config.forms[formName]?.source || config.defaultSource;
