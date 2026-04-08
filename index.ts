@@ -3,6 +3,9 @@ import { sendResponseFromFields, formFieldsToText } from "./mailer";
 import { rateLimit } from "./ratelimit";
 import { isSpam } from "./antispam";
 
+if (Bun.env.NODE_ENV === "development")
+    console.warn("Running in development mode. Make sure to set NODE_ENV=production in production environments.\nDev mode disables orig checks and rate limiting.");
+
 const port = Bun.env.PORT || 3000;
 
 Bun.serve({
