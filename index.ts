@@ -54,7 +54,8 @@ Bun.serve({
             let formFields: Record<string, string>;
             try {
                 formFields = await parseFormFields(req);
-            } catch {
+            } catch(error) {
+                console.error("Failed to parse form fields:", error);
                 return new Response("Invalid request body", { status: 400 });
             }
 
