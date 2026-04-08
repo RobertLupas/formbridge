@@ -30,6 +30,8 @@ FormBridge is designed to receive POST requests directly from your frontend.
    bun install
    bun dev
    ```
+   
+   Use `bun start` for production use.
 
 ### 2) Send a test submission
 
@@ -190,7 +192,7 @@ Include a `<input type="text" name="_gotcha" style="display:none">`. Bots will f
 ### Steps
 1. Clone the repo and edit [config.ts](config.ts) with your form definitions and email settings.
 2. Set environment variables (`SMTP_USER`, `SMTP_PASSWORD`, etc.) on your hosting platform.
-3. Deploy the repository. FormBridge runs as a standard Bun HTTP server.
+3. Deploy the repository. FormBridge runs as a standard Bun HTTP server (use `bun run start`).
 4. Ensure your forms send requests to `https://your-domain.com/form/:id` and that the form's origin matches your configured `source` values.
 
 ## Contribution
