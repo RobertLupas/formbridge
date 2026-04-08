@@ -8,6 +8,32 @@ if (Bun.env.NODE_ENV === "development")
 
 const port = Bun.env.PORT || 3000;
 
+async function parseFormFields(req: Request): Promise<Record<string, string>> {
+    const contentType = req.headers.get("content-type")?.toLowerCase() || "";
+
+    if (contentType.includes("application/json")) {
+        const payload = await req.json();
+        if (!payload || typeof payload !== "object" || Array.isArray(payload))
+            throw new Error("Invalid JSON payload");
+
+        return Object.fromEntries(
+            Object.entries(payload as Record<string, unknown>).map(([key, value]) => [key, String(value ?? "")])
+        );
+    }
+
+    if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+        const formData = await req.formData();
+        const fields: Record<string, string> = {};
+
+        for (const [key, value] of formData.entries())
+            fields[key] = typeof value === "string" ? value : value.name;
+
+        return fields;
+    }
+
+    throw new Error(`Unsupported content type: ${contentType || "unknown"}`);
+}
+
 Bun.serve({
     port: port,
 
@@ -25,7 +51,12 @@ Bun.serve({
 
             if (!req.body) return new Response("Missing request body", { status: 400 });
 
-            const formFields = await req.json() as Record<string, string>;
+            let formFields: Record<string, string>;
+            try {
+                formFields = await parseFormFields(req);
+            } catch {
+                return new Response("Invalid request body", { status: 400 });
+            }
 
             if (isSpam(formFields, req, formId)) return new Response("Spam detected", { status: 400 });
 
