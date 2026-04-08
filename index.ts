@@ -8,7 +8,7 @@ if (Bun.env.NODE_ENV === "development")
 
 const port = Bun.env.PORT || 3000;
 
-async function parseFormFields(req: Request): Promise<Record<string, string>> {
+async function parseFormFields(req: Request): Promise<[boolean, Record<string, string>]> {
     const contentType = req.headers.get("content-type")?.toLowerCase() ?? "";
 
     if (contentType.includes("application/json")) {
@@ -16,9 +16,9 @@ async function parseFormFields(req: Request): Promise<Record<string, string>> {
         if (!payload || typeof payload !== "object" || Array.isArray(payload))
             throw new Error("Invalid JSON payload");
 
-        return Object.fromEntries(
+        return [true, Object.fromEntries(
             Object.entries(payload as Record<string, unknown>).map(([key, value]) => [key, String(value ?? "")])
-        );
+        )];
     }
 
     if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
@@ -28,7 +28,7 @@ async function parseFormFields(req: Request): Promise<Record<string, string>> {
         for (const [key, value] of formData.entries())
             fields[key] = typeof value === "string" ? value : value.name;
 
-        return fields;
+        return [false, fields];
     }
 
     throw new Error(`Unsupported content type: ${contentType || "unknown"}`);
@@ -52,8 +52,9 @@ Bun.serve({
             if (!req.body) return new Response("Missing request body", { status: 400 });
 
             let formFields: Record<string, string>;
+            let isJson = false;
             try {
-                formFields = await parseFormFields(req);
+                [isJson, formFields] = await parseFormFields(req);
             } catch (error) {
                 console.error("Failed to parse form fields:", error);
                 return new Response("Invalid request body", { status: 400 });
@@ -65,7 +66,7 @@ Bun.serve({
             await sendResponseFromFields(formId, formFields, req.headers.get("referer") || undefined);
 
             const redirectUrl = form?.redirect || config.defaultRedirect;
-            if (redirectUrl)
+            if (redirectUrl && !isJson)
                 return Response.redirect(redirectUrl, 303);
             return Response.json({ success: true, message: "Submission received" });
         }
