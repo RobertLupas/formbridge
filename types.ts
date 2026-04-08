@@ -20,7 +20,7 @@ export interface Config {
     defaultTo: string;
     defaultSource: string;
     defaultSubjectPrefix?: string;
-    defaultRedirect: string;
+    defaultRedirect?: string;
     catchAll: boolean;
     noHonetpot?: boolean;
     rateLimit?: number;

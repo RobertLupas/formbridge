@@ -54,7 +54,7 @@ Bun.serve({
             let formFields: Record<string, string>;
             try {
                 formFields = await parseFormFields(req);
-            } catch(error) {
+            } catch (error) {
                 console.error("Failed to parse form fields:", error);
                 return new Response("Invalid request body", { status: 400 });
             }
@@ -64,7 +64,10 @@ Bun.serve({
             console.log(`Received submission for \x1b[36m${formId}\x1b[0m: ${formFieldsToText(formFields, false, false)}`);
             await sendResponseFromFields(formId, formFields, req.headers.get("referer") || undefined);
 
-            return Response.redirect(form?.redirect || config.defaultRedirect, 303);
+            const redirectUrl = form?.redirect || config.defaultRedirect;
+            if (redirectUrl)
+                return Response.redirect(redirectUrl, 303);
+            return Response.json({ success: true, message: "Submission received" });
         }
 
         return new Response("Forbidden", { status: 403 });
