@@ -23,5 +23,6 @@ export interface Config {
     defaultRedirect: string;
     catchAll: boolean;
     noHonetpot?: boolean;
+    rateLimit?: number;
     forms: Record<string, FormConfig>;
 }

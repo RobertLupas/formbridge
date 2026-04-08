@@ -1,5 +1,7 @@
 import config from "./config";
 import { sendResponseFromFields, formFieldsToText } from "./mailer";
+import { rateLimit } from "./ratelimit";
+import { isSpam } from "./antispam";
 
 const port = Bun.env.PORT || 3000;
 
@@ -7,6 +9,8 @@ Bun.serve({
     port: port,
 
     async fetch(req) {
+        if (rateLimit(req)) return new Response("Too Many Requests", { status: 429 });
+
         const url = new URL(req.url);
 
         if (req.method === "POST" && url.pathname.startsWith("/form/")) {
@@ -20,7 +24,7 @@ Bun.serve({
 
             const formFields = await req.json() as Record<string, string>;
 
-            if (formFields["_gotcha"]) return new Response("Spam detected", { status: 400 });
+            if (isSpam(formFields, req, formId)) return new Response("Spam detected", { status: 400 });
 
             console.log(`Received submission for \x1b[36m${formId}\x1b[0m: ${formFieldsToText(formFields, false, false)}`);
             await sendResponseFromFields(formId, formFields, req.headers.get("referer") || undefined);
