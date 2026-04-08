@@ -5,7 +5,7 @@ export default {
     "defaultTo": "company@example.com",
     "defaultSource": "example.com",
     "defaultSubjectPrefix": "[Form Submission]",
-    "defaultRedirect": "/",
+    "defaultRedirect": "https://google.com",
     "catchAll": false,
     "forms": {
         "contact": {}
