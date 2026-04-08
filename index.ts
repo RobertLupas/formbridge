@@ -9,7 +9,7 @@ if (Bun.env.NODE_ENV === "development")
 const port = Bun.env.PORT || 3000;
 
 async function parseFormFields(req: Request): Promise<Record<string, string>> {
-    const contentType = req.headers.get("content-type")?.toLowerCase() || "";
+    const contentType = req.headers.get("content-type")?.toLowerCase() ?? "";
 
     if (contentType.includes("application/json")) {
         const payload = await req.json();
