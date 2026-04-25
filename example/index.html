@@ -1,0 +1,25 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FormBridge Example Usage</title>
+</head>
+
+<body
+  style="margin: 0; padding-left: 14px; padding-right: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; height: 100vh; text-align: center;">
+  <a href="https://github.com/robertLupas/formbridge" target="_blank">FormBridge on GitHub</a>
+
+  <p>Submit your email and message below, and see FormBridge in action:</p>
+
+  <form action="http://localhost:3000/form/contact" method="POST"
+    style="display: flex; flex-direction: column; width: 100%; max-width: 300px; gap: 5px; margin: 0;">
+    <input name="email" type="email" placeholder="Email" required />
+    <textarea name="message" maxlength="200" placeholder="Message" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+
+  <a href="https://hackclub.enterprise.slack.com/archives/C0AS2TT1LQH" target="_blank">See your submission here!</a>
+</body>
+
+</html>
