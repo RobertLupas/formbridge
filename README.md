@@ -67,11 +67,11 @@ FormBridge is configured in [config.ts](config.ts). The app uses environment var
 | --- | --- | --- |
 | `PORT` | No | HTTP port for the Bun server. Defaults to `3000`. |
 | `NODE_ENV` | No | Set to `development` to disable origin checks and rate limiting. |
-| `USER` | Yes, unless `smtp.auth.user` is set | SMTP username / sender email address. |
+| `SMTP_USER` | Yes, unless `smtp.auth.user` is set | SMTP username / sender email address. |
 | `SMTP_HOST` | Yes for non-Gmail SMTP, unless `smtp.host` is set | SMTP host when using generic SMTP. |
 | `SMTP_PORT` | Yes for non-Gmail SMTP, unless `smtp.port` is set | SMTP port when using generic SMTP. |
 | `SMTP_FROM` | No, but some SMTP servers might require it to match the email user. (`smtp.from` can be set instead) | SMTP `from` email adress. |
-| `PASSWORD` | Yes, unless `smtp.auth.pass` is set | SMTP password or Google App Password (for Gmail). |
+| `SMTP_PASSWORD` | Yes, unless `smtp.auth.pass` is set | SMTP password or Google App Password (for Gmail). |
 
 ### Config object
 

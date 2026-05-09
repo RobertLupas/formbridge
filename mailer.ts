@@ -4,8 +4,8 @@ import { capitalizeFirstLetter } from "./util";
 
 var transporter: nodemailer.Transporter;
 
-const user = config.smtp?.auth.user || Bun.env.USER as string;
-if (!user) throw new Error("SMTP user is not defined. Please provide it in the configuration or set the USER environment variable.");
+const user = config.smtp?.auth.user || Bun.env.SMTP_USER as string;
+if (!user) throw new Error("SMTP user is not defined. Please provide it in the configuration or set the SMTP_USER environment variable.");
 
 const fromAddress =
     config.smtp?.from ||
@@ -18,7 +18,7 @@ switch (config.service) {
             service: "gmail",
             auth: {
                 user: user,
-                pass: config.smtp?.auth.pass || Bun.env.PASSWORD,
+                pass: config.smtp?.auth.pass || Bun.env.SMTP_PASSWORD,
             },
         });
         break;
@@ -26,7 +26,7 @@ switch (config.service) {
     default: {
         const host = config.smtp?.host || Bun.env.SMTP_HOST;
         const port = config.smtp?.port || parseInt(Bun.env.SMTP_PORT as string);
-        const pass = config.smtp?.auth.pass || Bun.env.PASSWORD as string;
+        const pass = config.smtp?.auth.pass || Bun.env.SMTP_PASSWORD as string;
         if (!host || !port || !pass) throw new Error("SMTP configuration is incomplete. Please provide host, port, and auth in the configuration.");
 
         transporter = nodemailer.createTransport({
