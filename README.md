@@ -67,10 +67,11 @@ FormBridge is configured in [config.ts](config.ts). The app uses environment var
 | --- | --- | --- |
 | `PORT` | No | HTTP port for the Bun server. Defaults to `3000`. |
 | `NODE_ENV` | No | Set to `development` to disable origin checks and rate limiting. |
-| `SMTP_USER` | Yes, unless `smtp.auth.user` is set | SMTP username / sender email address. |
+| `USER` | Yes, unless `smtp.auth.user` is set | SMTP username / sender email address. |
 | `SMTP_HOST` | Yes for non-Gmail SMTP, unless `smtp.host` is set | SMTP host when using generic SMTP. |
 | `SMTP_PORT` | Yes for non-Gmail SMTP, unless `smtp.port` is set | SMTP port when using generic SMTP. |
-| `SMTP_PASSWORD` | Yes, unless `smtp.auth.pass` is set | SMTP password or Google App Password (for Gmail). |
+| `SMTP_FROM` | No, but some SMTP servers might require it to match the email user. (`smtp.from` can be set instead) | SMTP `from` email adress. |
+| `PASSWORD` | Yes, unless `smtp.auth.pass` is set | SMTP password or Google App Password (for Gmail). |
 
 ### Config object
 
@@ -82,6 +83,7 @@ The exported config has this shape:
   smtp?: {
     host?: string;
     port?: number;
+    from?: string;
     auth: {
       user?: string;
       pass?: string;
@@ -108,7 +110,7 @@ The exported config has this shape:
 : When set to `"gmail"`, FormBridge uses Gmail transport and expects a Gmail app password. Any other value falls back to generic SMTP.
 
 `smtp`
-: Optional SMTP overrides. `smtp.auth.user` and `smtp.auth.pass` replace the `SMTP_USER` and `SMTP_PASSWORD` environment variables. `smtp.host` and `smtp.port` replace `SMTP_HOST` and `SMTP_PORT` in the generic SMTP path.
+: Optional SMTP overrides. `smtp.auth.user` and `smtp.auth.pass` replace the `SMTP_USER` and `SMTP_PASSWORD` environment variables. `smtp.host` and `smtp.port` replace `SMTP_HOST` and `SMTP_PORT` in the generic SMTP path. `smtp.from` replaces `SMTP_FROM`.
 
 `defaultTo`
 : Default recipient address used when a form does not define its own `to` value.

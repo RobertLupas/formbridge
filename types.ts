@@ -8,6 +8,7 @@ interface FormConfig {
 interface SmtpConfig {
     host?: string;
     port?: number;
+    from?:string;
     auth: {
         user?: string;
         pass?: string;

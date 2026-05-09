@@ -7,6 +7,11 @@ var transporter: nodemailer.Transporter;
 const user = config.smtp?.auth.user || Bun.env.USER as string;
 if (!user) throw new Error("SMTP user is not defined. Please provide it in the configuration or set the USER environment variable.");
 
+const fromAddress =
+    config.smtp?.from ||
+    Bun.env.SMTP_FROM ||
+    user;
+
 switch (config.service) {
     case "gmail": {
         transporter = nodemailer.createTransport({
@@ -56,7 +61,7 @@ export async function sendResponseFromFields(formName: string, formFields: Recor
 
     try {
         await transporter.sendMail({
-            from: { name: `${capitalizeFirstLetter(formName)} ${source ? "(on " + source + ")" : ""}`, address: user },
+            from: { name: `${capitalizeFirstLetter(formName)} ${source ? "(on " + source + ")" : ""}`, address: fromAddress },
             to: form?.to || config.defaultTo,
             subject: `${form?.subjectPrefix ?? config.defaultSubjectPrefix ?? ""} New ${capitalizeFirstLetter(formName)} Form Submission`,
             html: formFieldsToHtml(formName, formFields, source)
